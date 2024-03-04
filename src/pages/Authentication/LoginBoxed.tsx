@@ -102,7 +102,7 @@ const LoginBoxed = () => {
                         localStorage.setItem('name', res.data.data.name);
                         localStorage.setItem('phone', res.data.data.phone);
                         localStorage.setItem('state', res.data.data.state);
-                        localStorage.setItem('district', res.data.data.district);
+                        localStorage.setItem('district1', res.data.data.district);
                         localStorage.setItem('country', res.data.data.country);
                         localStorage.setItem('email', res.data.data.email);
                         localStorage.setItem('address', res.data.data.address);
