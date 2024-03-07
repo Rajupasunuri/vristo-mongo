@@ -35,6 +35,9 @@ import QueryComplaint from '../pages/Apps/QueryComplaint';
 import InvoicePreviews from '../pages/Apps/InvoicePreviews';
 import PaymentGate from '../pages/Apps/PaymentGate';
 import ApplyLeave from '../pages/Apps/ApplyLeave';
+import Client from '../pages/Apps/Client';
+import ContactList from '../pages/Apps/ContactList';
+import Feedback from '../pages/Apps/Feedback';
 //import Logout from '../pages/Logout';
 const Index = lazy(() => import('../pages/Index'));
 const Logout = lazy(() => import('../pages/Logout'));
@@ -187,8 +190,20 @@ const routes = [
         element: <Contacts />,
     },
     {
+        path: '/feedback',
+        element: <Feedback />,
+    },
+    {
         path: '/apps/mailbox',
         element: <Mailbox />,
+    },
+    {
+        path: '/contactList',
+        element: <ContactList />,
+    },
+    {
+        path: '/new-client',
+        element: <Client />,
     },
     {
         path: '/apps/invoice/list',
