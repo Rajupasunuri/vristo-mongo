@@ -257,7 +257,6 @@ const Layouts = () => {
                                     </div>
                                     <div className="mb-5">
                                         <Select
-                                            //defaultValue={{ label: existoption, value: existoption }}
                                             defaultValue={{ label: existoption, value: existoption }}
                                             //defaultValue={options[0]}
                                             options={options}
