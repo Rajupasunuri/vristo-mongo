@@ -1,22 +1,9 @@
-import { Link } from 'react-router-dom';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import CodeHighlight from '../../components/Highlight';
-import { setPageTitle } from '../../store/themeConfigSlice';
-import { useDispatch } from 'react-redux';
-import IconCode from '../../components/Icon/IconCode';
-//import { options } from '@fullcalendar/core/preact';
+import React, { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
-import { FaPersonCircleCheck, FaPersonCircleXmark } from 'react-icons/fa6';
+import DataTable from 'react-data-table-component';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { number } from 'yup';
-import { string } from 'yup/lib/locale';
-import { Transition, Dialog } from '@headlessui/react';
-import ReactPlayer from 'react-player';
-import IconX from '../../components/Icon/IconX';
-import DataTable from 'react-data-table-component';
-import React from 'react';
 
 const Layouts = () => {
     interface RowData {
@@ -25,24 +12,28 @@ const Layouts = () => {
         option: string;
     }
 
-    const [dialog, setDialog] = useState(false);
-    const [refername, setrefername] = useState('');
-    const [refer_mobile, setrefer_mobile] = useState('');
-    const [referwhats, setreferwhats] = useState('');
-    const [referemail, setreferemail] = useState('');
-    const [referaddress, setreferaddress] = useState('');
-    const [referbadge, setreferbadge] = useState('');
     const [questionInput, setQuestionInput] = useState(true);
     const [editInput, setEditInput] = useState(false);
     const [existvalue, setexistvalue] = useState('');
     const [existoption, setexistoption] = useState('');
     const [id, setid] = useState('');
-    const [random, setrandom] = useState(0);
 
     const [values, setValues] = useState({
         question: '',
         option: 'Yes/No',
     });
+
+    const [option1, setoption1] = useState({ value: 'Yes/No', label: 'Yes/No' });
+
+    const [data, setData] = useState<RowData[]>([]);
+    const [search, setSearch] = useState<string>('');
+    const [filter, setFilter] = useState<RowData[]>([]);
+    const componentRef = useRef<any>();
+
+    const options: any = [
+        { value: 'Yes/No', label: 'Yes/No' },
+        { value: 'Fill in the blank ', label: 'Fill in the blank' },
+    ];
 
     const columns: any = [
         {
@@ -67,25 +58,21 @@ const Layouts = () => {
             name: 'Status',
             //selector: (row: RowData) => row.whatsapp,
         },
-        // {
-        //     name: 'Email',
-        //     selector: (row: RowData) => row.email,
-        // },
-        // {
-        //     name: 'address',
-        //     selector: (row: RowData) => row.address,
-        // },
-        // {
-        //     name: 'Badge',
-        //     selector: (row: RowData) => row.badge,
-        // },
     ];
 
-    const [data, setData] = useState<RowData[]>([]);
-    const [search, setSearch] = useState<string>('');
-    const [filter, setFilter] = useState<RowData[]>([]);
-    const componentRef = useRef<any>();
+    useEffect(() => {
+        // Function to be executed every one second
+        const interval = setInterval(() => {
+            getProduct();
+        }, 100); // 1000 milliseconds = 1 second
 
+        // Clear the interval when the component unmounts
+        return () => clearInterval(interval);
+    }, []);
+    useEffect(() => {
+        console.log('option1', values.option);
+        getProduct();
+    }, [values]);
     const getProduct = async () => {
         try {
             const res = await axios.get('http://localhost:3004/question/list');
@@ -96,10 +83,6 @@ const Layouts = () => {
             console.log(err);
         }
     };
-
-    useEffect(() => {
-        getProduct();
-    }, []);
 
     const tableHeaderstyle = {
         headCells: {
@@ -112,67 +95,40 @@ const Layouts = () => {
     };
 
     const handlequestion = (event: any) => {
-        setValues({ ...values, [event.target.name]: event.target.value });
-        //setexistvalue('');
+        setValues({ ...values, question: event.target.value });
     };
 
-    const handleoption = (event: any) => {
-        setValues({ ...values, option: event.value });
+    const handleoption = (selectedOption: any) => {
+        setValues({ ...values, option: selectedOption.value });
+        setoption1((prevOption) => ({ ...prevOption, value: selectedOption.value }));
+        setoption1((prevOption) => ({ ...prevOption, label: selectedOption.value }));
     };
 
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(setPageTitle('Layouts'));
-    });
-    const [codeArr, setCodeArr] = useState<string[]>(['code1,code2,code3,code4,code5,code6,code7,code8']);
-
-    const toggleCode = (name: string) => {
-        if (codeArr.includes(name)) {
-            setCodeArr((value) => value.filter((d) => d !== name));
-        } else {
-            setCodeArr([...codeArr, name]);
-        }
-    };
-
-    const options: any = [
-        { value: 'Yes/No', label: 'Yes/No' },
-        { value: 'Fill ', label: 'Fill ' },
-    ];
-
-    // const handlecoledit = async (id: any) => {
-    //     const newdata = await data.filter((item) => item._id == id);
-    //     setValues({
-    //         ...values,
-    //         question: newdata[0].question,
-    //         option: newdata[0].option,
-    //     });
-    //     setexistoption(newdata[0].option);
-    //     setexistvalue(newdata[0].question);
-    //     console.log('newdarta', newdata);
-    //     setQuestionInput(false);
-    //     setEditInput(true);
-    //     setid(id);
-    //     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // };
     const handlecoledit = async (id: any) => {
         const newdata = await data.filter((item) => item._id == id);
+        const news1 = options.find((option: any) => option.value === newdata[0].option);
         setValues({
             ...values,
             question: newdata[0].question,
-            option: newdata[0].option,
+            option: news1.value,
         });
+        setoption1((prevOption) => ({ ...prevOption, value: news1.value }));
+        setoption1((prevOption) => ({ ...prevOption, label: news1.value }));
 
-        setexistoption(newdata[0].option); // Update existoption with newdata[0].option
-        setexistvalue(newdata[0].question); // Update existvalue with newdata[0].question
-        console.log('newdarta', newdata);
+        setexistoption(newdata[0].option);
+        setexistvalue(newdata[0].question);
         setQuestionInput(false);
         setEditInput(true);
         setid(id);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    useEffect(() => {
+        console.log('New value of existoption:', existoption);
+        setexistoption(existoption);
+    }, [existoption]);
+
     const handlesubmit = (event: any) => {
-        console.log(values.question);
         axios
             .post('http://localhost:3004/question', values)
             .then((res) => {
@@ -185,11 +141,13 @@ const Layouts = () => {
 
         event.preventDefault();
     };
+
     const handlesubmitedit = (e: any) => {
         axios
             .post(`http://localhost:3004/edit/question?id=${id}`, values)
             .then((res) => {
                 console.log('changed', res);
+                toast.success('Question Edited successfully');
             })
             .catch((err) => {
                 console.log('not changed', err);
@@ -197,17 +155,11 @@ const Layouts = () => {
         e.preventDefault();
         setQuestionInput(true);
         setEditInput(false);
-        getProduct();
-    };
-    const handleEdit = () => {
-        setQuestionInput(true);
-        setEditInput(false);
     };
 
     return (
         <div>
             <div className="pt-5 ">
-                {/* Registration */}
                 <div className="panel" id="registration_form">
                     <div className="mb-10">
                         <h1 className="text-3xl font-extrabold !leading-snug text-primary md:text-4xl">Feedback Form</h1>
@@ -216,17 +168,13 @@ const Layouts = () => {
                         <>
                             <div className="mb-5">
                                 <form className="space-y-5" onSubmit={handlesubmit}>
-                                    {/* <div>
-                                <input type="text" placeholder="Add Question" required name="name" onChange={handleName} className="form-input sm:w-1/2 " />
-                            </div> */}
                                     <div>
                                         <label htmlFor="ctnTextarea">Add New Feedback Question</label>
                                         <textarea id="ctnTextarea" rows={5} name="question" className="form-textarea sm:w-1/2" onChange={handlequestion} placeholder="Add Question" required></textarea>
                                     </div>
                                     <div className="mb-5">
-                                        <Select defaultValue={options[0]} options={options} name="option" onChange={handleoption} isSearchable={false} className="sm:w-1/2" />
+                                        <Select value={option1} options={options} name="option" onChange={handleoption} isSearchable={false} className="sm:w-1/2" />
                                     </div>
-
                                     <button type="submit" className="btn btn-primary !mt-6">
                                         Submit
                                     </button>
@@ -234,14 +182,10 @@ const Layouts = () => {
                             </div>
                         </>
                     ) : null}
-
                     {editInput ? (
                         <>
                             <div className="mb-5">
                                 <form className="space-y-5" onSubmit={handlesubmitedit}>
-                                    {/* <div>
-                                <input type="text" placeholder="Add Question" required name="name" onChange={handleName} className="form-input sm:w-1/2 " />
-                            </div> */}
                                     <div>
                                         <label htmlFor="ctnTextarea">Edit Form</label>
                                         <textarea
@@ -256,17 +200,8 @@ const Layouts = () => {
                                         ></textarea>
                                     </div>
                                     <div className="mb-5">
-                                        <Select
-                                            defaultValue={{ label: existoption, value: existoption }}
-                                            //defaultValue={options[0]}
-                                            options={options}
-                                            name="option"
-                                            onChange={handleoption}
-                                            isSearchable={false}
-                                            className="sm:w-1/2"
-                                        />
+                                        <Select value={option1} options={options} name="option" onChange={handleoption} isSearchable={false} className="sm:w-1/2" />
                                     </div>
-
                                     <button type="submit" className="btn btn-primary !mt-6">
                                         Edit
                                     </button>
@@ -276,14 +211,12 @@ const Layouts = () => {
                     ) : null}
                 </div>
             </div>
-
             <h1 className="text-lg font-semibold  p-4 pl-0">Question List</h1>
             <DataTable
                 customStyles={tableHeaderstyle}
                 columns={columns}
                 data={filter}
                 pagination
-                //selectableRows
                 fixedHeader
                 selectableRowsHighlight
                 highlightOnHover
@@ -292,7 +225,6 @@ const Layouts = () => {
                 className="whitespace-nowrap  overflow-auto"
                 subHeaderComponent={<input type="text" className="w-auto form-input  " placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />}
             />
-
             <ToastContainer position="top-center" autoClose={2000} />
         </div>
     );
