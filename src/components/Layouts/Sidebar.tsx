@@ -146,55 +146,59 @@ const Sidebar = () => {
                                 </AnimateHeight>
                             </li>
 
-                            {/* <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'exams' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('exams')}>
+                            <li className="menu nav-item">
+                                <button type="button" className={`${currentMenu === 'InputManagement' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('InputManagement')}>
                                     <div className="flex items-center">
                                         <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Exams')}</span>
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Input Management')}</span>
                                     </div>
 
-                                    <div className={currentMenu !== 'exams' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                    <div className={currentMenu !== 'InputManagement' ? 'rtl:rotate-90 -rotate-90' : ''}>
                                         <IconCaretDown />
                                     </div>
                                 </button>
 
-                                <AnimateHeight duration={300} height={currentMenu === 'exams' ? 'auto' : 0}>
+                                <AnimateHeight duration={300} height={currentMenu === 'InputManagement' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
                                         <li>
-                                            <NavLink to="/talent-show">{t('Talent Show')}</NavLink>
+                                            <NavLink to="/communication">{t('Communication Modes')}</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/online-exam">{t('Online Exam')}</NavLink>
+                                            <NavLink to="/social-media">{t('Socila Media Modes')}</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/offline-exam">{t('Offline Exam')}</NavLink>
+                                            <NavLink to="/best-time">{t('Best Time to Call')}</NavLink>
+                                        </li>
+
+                                        <li>
+                                            <NavLink to="/payment-modes">{t('Payment Modes')}</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/schedule">{t('Exam Schedule')}</NavLink>
+                                            <NavLink to="/company-types">{t('Types of Company')}</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/mark">{t('Mark')}</NavLink>
+                                            <NavLink to="/contact-type">{t('Types of Contact')}</NavLink>
                                         </li>
                                     </ul>
                                 </AnimateHeight>
-                            </li> */}
+                            </li>
 
                             {/* <li className="menu nav-item">
-                                <button type="button" className={`${currentMenu === 'finance' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('finance')}>
+                                <button type="button" className={`${currentMenu === 'Payment' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('Payment')}>
                                     <div className="flex items-center">
                                         <IconMenuDashboard className="group-hover:!text-primary shrink-0" />
-                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Finance')}</span>
+                                        <span className="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{t('Payment Modes')}</span>
                                     </div>
 
-                                    <div className={currentMenu !== 'finance' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                    <div className={currentMenu !== 'Payment' ? 'rtl:rotate-90 -rotate-90' : ''}>
                                         <IconCaretDown />
                                     </div>
                                 </button>
 
-                                <AnimateHeight duration={300} height={currentMenu === 'finance' ? 'auto' : 0}>
+                                <AnimateHeight duration={300} height={currentMenu === 'Payment' ? 'auto' : 0}>
                                     <ul className="sub-menu text-gray-500">
                                         <li>
-                                            <NavLink to="/invoice">{t('Invoice')}</NavLink>
+                                            <NavLink to="/invoice">{t('payment')}</NavLink>
                                         </li>
                                         <li>
                                             <NavLink to="/fines">{t('Fines')}</NavLink>
