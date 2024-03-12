@@ -10,6 +10,7 @@ const Layouts = () => {
         _id: any;
         question: string;
         option: string;
+        modes: string;
     }
 
     const [questionInput, setQuestionInput] = useState(true);
@@ -17,35 +18,32 @@ const Layouts = () => {
     const [existvalue, setexistvalue] = useState('');
     const [existoption, setexistoption] = useState('');
     const [id, setid] = useState('');
+    const [commmode, setcommmode] = useState('');
+    const [commurl, setcommurl] = useState('');
+    const [commusername, setcommusername] = useState('');
 
     const [values, setValues] = useState({
         question: '',
         option: 'Yes/No',
     });
 
-    const [option1, setoption1] = useState({ value: 'Yes/No', label: 'Yes/No' });
+    const [values1, setValues1] = useState({
+        modes: '',
+    });
 
     const [data, setData] = useState<RowData[]>([]);
     const [search, setSearch] = useState<string>('');
     const [filter, setFilter] = useState<RowData[]>([]);
     const componentRef = useRef<any>();
 
-    const options: any = [
-        { value: 'Yes/No', label: 'Yes/No' },
-        { value: 'Fill in the blank ', label: 'Fill in the blank' },
-    ];
-
     const columns: any = [
         {
-            name: 'Question',
-            selector: (row: RowData) => row.question,
+            name: 'Payment Mode',
+            selector: (row: RowData) => row.modes,
             wrap: true, // Enable word wrap
             // minWidth: '200px',
         },
-        {
-            name: 'Option',
-            selector: (row: RowData) => row.option,
-        },
+
         {
             name: 'Action',
             cell: (row: any) => (
@@ -80,10 +78,10 @@ const Layouts = () => {
     useEffect(() => {
         console.log('option1', values.option);
         getProduct();
-    }, [values]);
+    }, [values1]);
     const getProduct = async () => {
         try {
-            const res = await axios.get('http://localhost:3004/question/list');
+            const res = await axios.get('http://localhost:3004/question/list4');
             console.log('ui', res);
             setData(res.data);
             setFilter(res.data);
@@ -102,50 +100,35 @@ const Layouts = () => {
         },
     };
 
-    const handlequestion = (event: any) => {
-        setValues({ ...values, question: event.target.value });
-
-        if (event.target.value.length == 0) {
-            setValues({ ...values, question: '' });
-        }
-    };
-
-    const handleoption = (selectedOption: any) => {
-        setValues({ ...values, option: selectedOption.value });
-        setoption1((prevOption) => ({ ...prevOption, value: selectedOption.value }));
-        setoption1((prevOption) => ({ ...prevOption, label: selectedOption.value }));
-    };
-
     const handlecoledit = async (id: any) => {
         const newdata = await data.filter((item) => item._id == id);
-        const news1 = options.find((option: any) => option.value === newdata[0].option);
-        setValues({
-            ...values,
-            question: newdata[0].question,
-            option: news1.value,
-        });
-        setoption1((prevOption) => ({ ...prevOption, value: news1.value }));
-        setoption1((prevOption) => ({ ...prevOption, label: news1.value }));
+        //const news1 = options.find((option: any) => option.value === newdata[0].option);
 
-        setexistoption(newdata[0].option);
-        setexistvalue(newdata[0].question);
+        setValues1({ ...values1, modes: newdata[0].modes });
+        console.log('mode', newdata);
+        setcommmode(newdata[0].modes);
+
         setQuestionInput(false);
         setEditInput(true);
         setid(id);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    useEffect(() => {
-        console.log('New value of existoption:', existoption);
-        setexistoption(existoption);
-    }, [existoption]);
+    // useEffect(() => {
+    //     console.log('New value of existoption:', existoption);
+    //     setexistoption(existoption);
+    // }, [existoption]);
 
     const handlesubmit = (event: any) => {
         axios
-            .post('http://localhost:3004/question', values)
+            .post('http://localhost:3004/question4', values1)
             .then((res) => {
                 console.log('Questions', res.data.data.question);
-                toast.success('Question Added Successfully');
+                toast.success('Communication Details Added Successfully');
+                setValues1({ ...values1, modes: '' });
+                // setValues1({ ...values1, mode: '' });
+                // setValues1({ ...values1, url: '' });
+                // setValues1({ ...values1, username: '' });
             })
             .catch((err: any) => {
                 console.log('question error', err);
@@ -156,10 +139,11 @@ const Layouts = () => {
 
     const handlesubmitedit = (e: any) => {
         axios
-            .post(`http://localhost:3004/edit/question?id=${id}`, values)
+            .post(`http://localhost:3004/edit/question4?id=${id}`, values1)
             .then((res) => {
-                console.log('changed', res);
-                toast.success('Question Edited successfully');
+                console.log('changedsss', res);
+                toast.success('Communication Details Edited successfully');
+                setValues1({ ...values1, modes: '' });
             })
             .catch((err) => {
                 console.log('not changed', err);
@@ -169,24 +153,34 @@ const Layouts = () => {
         setEditInput(false);
     };
 
+    const handlecommunication = (event: any) => {
+        setValues1({ ...values1, [event.target.name]: event.target.value });
+    };
+
+    const handlecommunicationmode = (event: any) => {
+        setValues1({ ...values1, [event.target.name]: event.target.value });
+
+        if (values1.modes.length === 1) {
+            setcommmode('');
+        }
+    };
+
     return (
         <div>
             <div className="pt-5 ">
                 <div className="panel" id="registration_form">
                     <div className="mb-10">
-                        <h1 className="text-3xl font-extrabold !leading-snug text-primary md:text-4xl">Feedback Form</h1>
+                        <h1 className="text-3xl font-extrabold !leading-snug text-primary md:text-4xl">Payment Modes</h1>
                     </div>
                     {questionInput ? (
                         <>
                             <div className="mb-5">
                                 <form className="space-y-5" onSubmit={handlesubmit}>
                                     <div>
-                                        <label htmlFor="ctnTextarea">Add New Feedback Question</label>
-                                        <input type="text" name="question" className="form-input sm:w-1/2" onChange={handlequestion} placeholder="Add Question" required />
+                                        <label htmlFor="ctnTextarea">Add Payment Mode</label>
+                                        <input type="text" placeholder="Payment Mode" name="modes" value={values1.modes} onChange={handlecommunication} className="form-input sm:w-1/2" required />
                                     </div>
-                                    <div className="mb-5">
-                                        <Select value={option1} options={options} name="option" onChange={handleoption} isSearchable={false} className="sm:w-1/2" />
-                                    </div>
+
                                     <button type="submit" className="btn btn-primary !mt-6">
                                         Submit
                                     </button>
@@ -199,20 +193,18 @@ const Layouts = () => {
                             <div className="mb-5">
                                 <form className="space-y-5" onSubmit={handlesubmitedit}>
                                     <div>
-                                        <label htmlFor="ctnTextarea">Edit Form</label>
+                                        <label htmlFor="ctnTextarea">Edit payment Mode</label>
                                         <input
                                             type="text"
-                                            name="question"
+                                            placeholder="payment Mode"
+                                            value={values1.modes || commmode}
+                                            name="modes"
+                                            onChange={handlecommunicationmode}
                                             className="form-input sm:w-1/2"
-                                            onChange={handlequestion}
-                                            placeholder="Edit Question"
                                             required
-                                            value={values.question || existvalue}
                                         />
                                     </div>
-                                    <div className="mb-5">
-                                        <Select value={option1} options={options} name="option" onChange={handleoption} isSearchable={false} className="sm:w-1/2" />
-                                    </div>
+
                                     <button type="submit" className="btn btn-primary !mt-6">
                                         Edit
                                     </button>
@@ -222,7 +214,7 @@ const Layouts = () => {
                     ) : null}
                 </div>
             </div>
-            <h1 className="text-lg font-semibold  p-4 pl-0">Question List</h1>
+            <h1 className="text-lg font-semibold  p-4 pl-0">Payment Mode List</h1>
             <DataTable
                 customStyles={tableHeaderstyle}
                 columns={columns}

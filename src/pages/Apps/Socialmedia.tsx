@@ -10,6 +10,9 @@ const Layouts = () => {
         _id: any;
         question: string;
         option: string;
+        mode: string;
+        url: string;
+        username: string;
     }
 
     const [questionInput, setQuestionInput] = useState(true);
@@ -17,10 +20,19 @@ const Layouts = () => {
     const [existvalue, setexistvalue] = useState('');
     const [existoption, setexistoption] = useState('');
     const [id, setid] = useState('');
+    const [commmode, setcommmode] = useState('');
+    const [commurl, setcommurl] = useState('');
+    const [commusername, setcommusername] = useState('');
 
     const [values, setValues] = useState({
         question: '',
         option: 'Yes/No',
+    });
+
+    const [values1, setValues1] = useState({
+        mode: '',
+        url: '',
+        username: '',
     });
 
     const [option1, setoption1] = useState({ value: 'Yes/No', label: 'Yes/No' });
@@ -37,14 +49,18 @@ const Layouts = () => {
 
     const columns: any = [
         {
-            name: 'Question',
-            selector: (row: RowData) => row.question,
+            name: 'Communication Mode',
+            selector: (row: RowData) => row.mode,
             wrap: true, // Enable word wrap
             // minWidth: '200px',
         },
         {
-            name: 'Option',
-            selector: (row: RowData) => row.option,
+            name: 'URL',
+            selector: (row: RowData) => row.url,
+        },
+        {
+            name: 'Username',
+            selector: (row: RowData) => row.username,
         },
         {
             name: 'Action',
@@ -83,7 +99,7 @@ const Layouts = () => {
     }, [values]);
     const getProduct = async () => {
         try {
-            const res = await axios.get('http://localhost:3004/question/list');
+            const res = await axios.get('http://localhost:3004/question/list1');
             console.log('ui', res);
             setData(res.data);
             setFilter(res.data);
@@ -104,10 +120,6 @@ const Layouts = () => {
 
     const handlequestion = (event: any) => {
         setValues({ ...values, question: event.target.value });
-
-        if (event.target.value.length == 0) {
-            setValues({ ...values, question: '' });
-        }
     };
 
     const handleoption = (selectedOption: any) => {
@@ -118,17 +130,13 @@ const Layouts = () => {
 
     const handlecoledit = async (id: any) => {
         const newdata = await data.filter((item) => item._id == id);
-        const news1 = options.find((option: any) => option.value === newdata[0].option);
-        setValues({
-            ...values,
-            question: newdata[0].question,
-            option: news1.value,
-        });
-        setoption1((prevOption) => ({ ...prevOption, value: news1.value }));
-        setoption1((prevOption) => ({ ...prevOption, label: news1.value }));
+        //const news1 = options.find((option: any) => option.value === newdata[0].option);
 
-        setexistoption(newdata[0].option);
-        setexistvalue(newdata[0].question);
+        setValues1({ ...values1, mode: newdata[0].mode, url: newdata[0].url, username: newdata[0].username });
+        console.log('mode', newdata);
+        setcommmode(newdata[0].mode);
+        setcommurl(newdata[0].url);
+        setcommusername(newdata[0].username);
         setQuestionInput(false);
         setEditInput(true);
         setid(id);
@@ -142,10 +150,14 @@ const Layouts = () => {
 
     const handlesubmit = (event: any) => {
         axios
-            .post('http://localhost:3004/question', values)
+            .post('http://localhost:3004/question1', values1)
             .then((res) => {
                 console.log('Questions', res.data.data.question);
-                toast.success('Question Added Successfully');
+                toast.success('Social Media Added Successfully');
+                setValues1({ ...values1, mode: '', url: '', username: '' });
+                // setValues1({ ...values1, mode: '' });
+                // setValues1({ ...values1, url: '' });
+                // setValues1({ ...values1, username: '' });
             })
             .catch((err: any) => {
                 console.log('question error', err);
@@ -156,10 +168,11 @@ const Layouts = () => {
 
     const handlesubmitedit = (e: any) => {
         axios
-            .post(`http://localhost:3004/edit/question?id=${id}`, values)
+            .post(`http://localhost:3004/edit/question1?id=${id}`, values1)
             .then((res) => {
                 console.log('changed', res);
-                toast.success('Question Edited successfully');
+                toast.success('Social Media Edited successfully');
+                setValues1({ ...values1, mode: '', url: '', username: '' });
             })
             .catch((err) => {
                 console.log('not changed', err);
@@ -169,24 +182,71 @@ const Layouts = () => {
         setEditInput(false);
     };
 
+    const handlecommunication = (event: any) => {
+        setValues1({ ...values1, [event.target.name]: event.target.value });
+    };
+
+    const handlecommunicationmode = (event: any) => {
+        setValues1({ ...values1, [event.target.name]: event.target.value });
+
+        if (values1.mode.length === 1) {
+            setcommmode('');
+        }
+    };
+    const handlecommunicationurl = (event: any) => {
+        setValues1({ ...values1, [event.target.name]: event.target.value });
+
+        if (values1.url.length === 1) {
+            setcommurl('');
+        }
+    };
+    const handlecommunicationusername = (event: any) => {
+        setValues1({ ...values1, [event.target.name]: event.target.value });
+
+        if (values1.username.length === 1) {
+            setcommusername('');
+        }
+    };
+
     return (
         <div>
             <div className="pt-5 ">
                 <div className="panel" id="registration_form">
                     <div className="mb-10">
-                        <h1 className="text-3xl font-extrabold !leading-snug text-primary md:text-4xl">Feedback Form</h1>
+                        <h1 className="text-3xl font-extrabold !leading-snug text-primary md:text-4xl">Social Media Modes</h1>
                     </div>
                     {questionInput ? (
                         <>
                             <div className="mb-5">
                                 <form className="space-y-5" onSubmit={handlesubmit}>
                                     <div>
-                                        <label htmlFor="ctnTextarea">Add New Feedback Question</label>
-                                        <input type="text" name="question" className="form-input sm:w-1/2" onChange={handlequestion} placeholder="Add Question" required />
+                                        <label htmlFor="ctnTextarea">Add Communication Mode</label>
+                                        <input type="text" placeholder="Communication Mode" name="mode" value={values1.mode} onChange={handlecommunication} className="form-input sm:w-1/2" required />
                                     </div>
-                                    <div className="mb-5">
-                                        <Select value={option1} options={options} name="option" onChange={handleoption} isSearchable={false} className="sm:w-1/2" />
+                                    <div>
+                                        <input
+                                            type="url"
+                                            pattern="https?://.+"
+                                            placeholder="Enter URL"
+                                            name="url"
+                                            value={values1.url}
+                                            onChange={handlecommunication}
+                                            className="form-input sm:w-1/2"
+                                            required
+                                        />
                                     </div>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Username"
+                                            name="username"
+                                            value={values1.username}
+                                            onChange={handlecommunication}
+                                            className="form-input sm:w-1/2"
+                                            required
+                                        />
+                                    </div>
+
                                     <button type="submit" className="btn btn-primary !mt-6">
                                         Submit
                                     </button>
@@ -199,19 +259,39 @@ const Layouts = () => {
                             <div className="mb-5">
                                 <form className="space-y-5" onSubmit={handlesubmitedit}>
                                     <div>
-                                        <label htmlFor="ctnTextarea">Edit Form</label>
+                                        <label htmlFor="ctnTextarea">Edit Communication Mode</label>
                                         <input
                                             type="text"
-                                            name="question"
+                                            placeholder="Communication Mode"
+                                            value={values1.mode || commmode}
+                                            name="mode"
+                                            onChange={handlecommunicationmode}
                                             className="form-input sm:w-1/2"
-                                            onChange={handlequestion}
-                                            placeholder="Edit Question"
                                             required
-                                            value={values.question || existvalue}
                                         />
                                     </div>
-                                    <div className="mb-5">
-                                        <Select value={option1} options={options} name="option" onChange={handleoption} isSearchable={false} className="sm:w-1/2" />
+                                    <div>
+                                        <input
+                                            type="url"
+                                            pattern="https?://.+"
+                                            placeholder="Enter URL"
+                                            value={values1.url || commurl}
+                                            name="url"
+                                            onChange={handlecommunicationurl}
+                                            className="form-input sm:w-1/2"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Username"
+                                            value={values1.username || commusername}
+                                            name="username"
+                                            onChange={handlecommunicationusername}
+                                            className="form-input sm:w-1/2"
+                                            required
+                                        />
                                     </div>
                                     <button type="submit" className="btn btn-primary !mt-6">
                                         Edit
@@ -222,7 +302,7 @@ const Layouts = () => {
                     ) : null}
                 </div>
             </div>
-            <h1 className="text-lg font-semibold  p-4 pl-0">Question List</h1>
+            <h1 className="text-lg font-semibold  p-4 pl-0">Social Media List</h1>
             <DataTable
                 customStyles={tableHeaderstyle}
                 columns={columns}

@@ -38,6 +38,12 @@ import ApplyLeave from '../pages/Apps/ApplyLeave';
 import Client from '../pages/Apps/Client';
 import ContactList from '../pages/Apps/ContactList';
 import Feedback from '../pages/Apps/Feedback';
+import Communication from '../pages/Apps/Communication';
+import Socialmedia from '../pages/Apps/Socialmedia';
+import Besttime from '../pages/Apps/Besttime';
+import PaymentModes from '../pages/Apps/PaymentModes';
+import CompanyType from '../pages/Apps/CompanyType';
+import ContactTypes from '../pages/Apps/ContactTypes';
 //import Logout from '../pages/Logout';
 const Index = lazy(() => import('../pages/Index'));
 const Logout = lazy(() => import('../pages/Logout'));
@@ -192,6 +198,30 @@ const routes = [
     {
         path: '/feedback',
         element: <Feedback />,
+    },
+    {
+        path: '/communication',
+        element: <Communication />,
+    },
+    {
+        path: '/social-media',
+        element: <Socialmedia />,
+    },
+    {
+        path: '/best-time',
+        element: <Besttime />,
+    },
+    {
+        path: '/payment-modes',
+        element: <PaymentModes />,
+    },
+    {
+        path: '/company-types',
+        element: <CompanyType />,
+    },
+    {
+        path: '/contact-type',
+        element: <ContactTypes />,
     },
     {
         path: '/apps/mailbox',
