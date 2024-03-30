@@ -25,16 +25,11 @@ import { match } from 'assert';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Center } from '@mantine/core';
-import { app } from '../../Backend/Firebaseconfig';
-
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginBoxed = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isLoggedinuser = useSelector((state: IRootState) => state.themeConfig.isLoggedinuser);
-
-    let auth = getAuth();
 
     //const realstate = useSelector((state: IRootState) => state);
     //console.log('realstate',realstate);
@@ -66,9 +61,6 @@ const LoginBoxed = () => {
     const [passpath, setPasspath] = useState('');
     const [userf, setuserf] = useState('');
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
     // useEffect(()=>{
     //    console.log('check',useselector)
     // },[useselector])
@@ -89,24 +81,11 @@ const LoginBoxed = () => {
         otp: '',
     });
 
-    const handleSubmit12 = (event: any) => {
-        createUserWithEmailAndPassword(auth, values1.email1, values1.password1)
-            .then((res) => {
-                console.log('Login Successfully');
-                console.log('response', res);
-                toast('Logged in Successfully');
-                dispatch(signin());
-                navigate('/dashboard');
-            })
-            .catch((err) => {
-                console.log('firebase error', err);
-            });
-    };
-
     const handleSubmit1 = (event: any) => {
-        signInWithEmailAndPassword(auth, email, password)
+        axios
+            .post('http://localhost:3004/login', values1)
             .then((res) => {
-                console.log('Login Successfully');
+                console.log('Login Successfully', res.data.token);
                 console.log('response', res);
                 toast('Logged in Successfully');
                 dispatch(signin());
@@ -114,10 +93,60 @@ const LoginBoxed = () => {
                 setUserPass('');
                 localStorage.setItem('uId', user1);
                 const ls = localStorage.getItem('uId');
+                axios
+                    .get(`http://localhost:3004/getuser?username=${ls}`)
+                    .then((res) => {
+                        console.log('result', res.data.data.name);
+
+                        localStorage.setItem('section', res.data.data.section);
+                        localStorage.setItem('name', res.data.data.name);
+                        localStorage.setItem('phone', res.data.data.phone);
+                        localStorage.setItem('state', res.data.data.state);
+                        localStorage.setItem('district1', res.data.data.district);
+                        localStorage.setItem('country', res.data.data.country);
+                        localStorage.setItem('email', res.data.data.email);
+                        localStorage.setItem('address', res.data.data.address);
+                        const jsonData = JSON.stringify(res.data.data);
+                        dispatch1(fetchUserSuccess(jsonData));
+                        dispatch(signin());
+                        localStorage.setItem('user', JSON.parse(jsonData));
+                    })
+                    .catch((err) => console.log('errors', err));
             })
             .catch((err) => {
+                if (err.response.status == 401) {
+                    setUserPass(err.response.data);
+                }
+                if (err.response.status == 404) {
+                    setuserf(err.response.data);
+                }
+                if (err.response.status == 400) {
+                    setminpass(err.response.data.errors[0].msg);
+                }
                 //toast.error("Username or Password doesn't match");
-                console.log('superr');
+                console.log('superr', err.response.status);
+                if (err.response && err.response.data) {
+                    console.log('hi error');
+                    const { errors } = err.response.data;
+                    console.log(errors);
+                    console.log('length', errors.length);
+                    console.log('error1', err.response.data.errors[0].msg);
+                    console.log(errors[0].path);
+                    errors.forEach((error: any) => {
+                        switch (error.path) {
+                            case 'password':
+                                setPasspath(error.msg);
+                                break;
+                            case 'username':
+                                setUserpath(error.msg);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                } else {
+                    console.log('Unexpected error occurred:', err);
+                }
 
                 console.log('failed', err);
             });
@@ -284,10 +313,31 @@ const LoginBoxed = () => {
     };
 
     const handleChange8 = (event: any) => {
-        setPassword(event.target.value);
+        setValues1({ ...values1, [event.target.name]: [event.target.value] });
+        //setEmails("");
+        //setNames("");
+        setPass1('');
+        setUserPass('');
+        setPasspath('');
+        setminpass('');
+        setuserf('');
     };
     const handleChange7 = (event: any) => {
-        setEmail(event.target.value);
+        setValues1({ ...values1, [event.target.name]: [event.target.value] });
+        //setEmails("");
+        //setNames("");
+        const userinput = event.target.value;
+        setUsererror(userinput);
+        if (userinput.includes(' ')) {
+            setUsererror('Username should not contain spaces');
+        } else {
+            setUsererror('');
+        }
+        setUserPass('');
+        setUser1(event.target.value);
+        setUserpath('');
+        setuserf('');
+        setminpass('');
     };
     return (
         <div>
@@ -310,14 +360,14 @@ const LoginBoxed = () => {
                             <form className="space-y-5 dark:text-white" onSubmit={handleSubmit1}>
                                 {mobilebox ? (
                                     <div>
-                                        <label htmlFor="email">Username</label>
+                                        <label htmlFor="username">Username</label>
                                         <div className="relative text-white-dark">
                                             <input
-                                                id="email"
-                                                type="email"
+                                                id="username"
+                                                type="text"
                                                 placeholder="Enter Username"
                                                 className="form-input ps-10 placeholder:text-white-dark"
-                                                name="email"
+                                                name="username"
                                                 required
                                                 // value={formData.mobile}
                                                 onChange={handleChange7}

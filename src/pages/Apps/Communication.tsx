@@ -11,6 +11,7 @@ const Layouts = () => {
         question: string;
         option: string;
         modes: string;
+        status: number;
     }
 
     const [questionInput, setQuestionInput] = useState(true);
@@ -29,6 +30,7 @@ const Layouts = () => {
 
     const [values1, setValues1] = useState({
         modes: '',
+        status: 1,
     });
 
     const [data, setData] = useState<RowData[]>([]);

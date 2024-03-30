@@ -13,6 +13,7 @@ const Layouts = () => {
         mode: string;
         url: string;
         username: string;
+        status: string;
     }
 
     const [questionInput, setQuestionInput] = useState(true);
@@ -33,6 +34,7 @@ const Layouts = () => {
         mode: '',
         url: '',
         username: '',
+        status: 1,
     });
 
     const [option1, setoption1] = useState({ value: 'Yes/No', label: 'Yes/No' });

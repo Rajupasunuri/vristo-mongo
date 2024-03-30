@@ -44,6 +44,9 @@ import Besttime from '../pages/Apps/Besttime';
 import PaymentModes from '../pages/Apps/PaymentModes';
 import CompanyType from '../pages/Apps/CompanyType';
 import ContactTypes from '../pages/Apps/ContactTypes';
+import ApplicationDev from '../pages/Apps/ApplicationDev';
+import WebsiteDev from '../pages/Apps/WebsiteDev';
+import MobileApp from '../pages/Apps/MobileApp';
 //import Logout from '../pages/Logout';
 const Index = lazy(() => import('../pages/Index'));
 const Logout = lazy(() => import('../pages/Logout'));
@@ -224,12 +227,24 @@ const routes = [
         element: <ContactTypes />,
     },
     {
+        path: '/applicationDev',
+        element: <ApplicationDev />,
+    },
+    {
         path: '/apps/mailbox',
         element: <Mailbox />,
     },
     {
         path: '/contactList',
         element: <ContactList />,
+    },
+    {
+        path: '/websiteDev',
+        element: <WebsiteDev />,
+    },
+    {
+        path: '/mobileApp',
+        element: <MobileApp />,
     },
     {
         path: '/new-client',
