@@ -131,6 +131,8 @@ const Layouts = () => {
             .post('http://localhost:3004/addClient', values)
             .then((res) => {
                 console.log('client data', res);
+                toast.success('Client Details Added Successfully');
+                setValues({ name: '', refer_mobile: 0, mobile: 0, whatsapp: 0, email: '', address: '', badge: '' });
             })
             .catch((err: any) => {
                 console.log('client error', err);

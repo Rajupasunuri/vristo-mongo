@@ -15,6 +15,7 @@ const Layouts = () => {
         username: string;
         time: '';
         shift: '';
+        status: number;
     }
 
     const [questionInput, setQuestionInput] = useState(true);
@@ -33,6 +34,7 @@ const Layouts = () => {
     const [values1, setValues1] = useState({
         shift: '',
         time: '',
+        status: 1,
     });
 
     const [option1, setoption1] = useState({ value: 'Yes/No', label: 'Yes/No' });

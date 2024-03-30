@@ -5,6 +5,8 @@ import { toggleRTL, toggleTheme, toggleLocale, toggleMenu, toggleLayout, toggleA
 import store from './store';
 import { Navigate } from 'react-router';
 
+import '../src/Backend/Firebaseconfig';
+
 function App({ children }: PropsWithChildren) {
     const themeConfig = useSelector((state: IRootState) => state.themeConfig);
     const dispatch = useDispatch();

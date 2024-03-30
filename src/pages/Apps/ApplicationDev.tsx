@@ -85,7 +85,7 @@ const Layouts = () => {
     }, [values]);
     const getProduct = async () => {
         try {
-            const res = await axios.get('http://localhost:3004/question/list');
+            const res = await axios.get('http://localhost:3004/question/list7');
             console.log('ui', res);
             setData(res.data);
             setFilter(res.data);
@@ -144,7 +144,7 @@ const Layouts = () => {
 
     const handlesubmit = (event: any) => {
         axios
-            .post('http://localhost:3004/question', values)
+            .post('http://localhost:3004/question7', values)
             .then((res) => {
                 console.log('Questions', res.data.data.question);
                 toast.success('Question Added Successfully');
@@ -159,7 +159,7 @@ const Layouts = () => {
 
     const handlesubmitedit = (e: any) => {
         axios
-            .post(`http://localhost:3004/edit/question?id=${id}`, values)
+            .post(`http://localhost:3004/edit/question7?id=${id}`, values)
             .then((res) => {
                 console.log('changed', res);
                 toast.success('Question Edited successfully');
@@ -178,7 +178,7 @@ const Layouts = () => {
             <div className="pt-5 ">
                 <div className="panel" id="registration_form">
                     <div className="mb-10">
-                        <h1 className="text-3xl font-extrabold !leading-snug text-primary md:text-4xl">Feedback Form</h1>
+                        <h1 className="text-3xl font-extrabold !leading-snug text-primary md:text-4xl">Application Development</h1>
                     </div>
                     {questionInput ? (
                         <>
